@@ -1,0 +1,41 @@
+/*
+  Warnings:
+
+  - You are about to drop the `products` table. If the table is not empty, all the data it contains will be lost.
+
+*/
+-- DropForeignKey
+ALTER TABLE "public"."products" DROP CONSTRAINT "products_categoryId_fkey";
+
+-- DropTable
+DROP TABLE "public"."products";
+
+-- CreateTable
+CREATE TABLE "public"."Product" (
+    "id" TEXT NOT NULL,
+    "title" TEXT NOT NULL,
+    "description" TEXT,
+    "images" TEXT[] DEFAULT ARRAY[]::TEXT[],
+    "inStock" INTEGER NOT NULL DEFAULT 0,
+    "price" DOUBLE PRECISION NOT NULL DEFAULT 0,
+    "sizes" "public"."Size"[] DEFAULT ARRAY[]::"public"."Size"[],
+    "slug" TEXT NOT NULL,
+    "type" TEXT NOT NULL,
+    "tags" TEXT[] DEFAULT ARRAY[]::TEXT[],
+    "gender" "public"."Gender" NOT NULL,
+    "categoryId" TEXT NOT NULL,
+
+    CONSTRAINT "Product_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Product_slug_key" ON "public"."Product"("slug");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Product_type_key" ON "public"."Product"("type");
+
+-- CreateIndex
+CREATE INDEX "Product_gender_idx" ON "public"."Product"("gender");
+
+-- AddForeignKey
+ALTER TABLE "public"."Product" ADD CONSTRAINT "Product_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "public"."Category"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
