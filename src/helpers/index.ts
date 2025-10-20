@@ -1,3 +1,4 @@
 export * from './categories.helpers'
-export * from './interfaces/pagination.interfaces'
+export * from './interfaces'
 export * from './pagination/pagination.funtions'
+export * from './currency/currency.helpers'

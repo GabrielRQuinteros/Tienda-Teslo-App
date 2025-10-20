@@ -27,8 +27,22 @@ export interface ProductFilters {
   tags?: string[];
 }
 
+export interface Country {
+  name: string;
+  id: string;
+}
 
 export interface SeedData {
     products: Product[],
+    users: SeedUser[],
+    countries: Country[]
 }
 
+
+interface SeedUser {
+  id?: string,
+  name: string
+  email: string,
+  roles: string[],
+  password?: string
+}

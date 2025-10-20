@@ -1,14 +1,16 @@
-'use client';
 import { montserAlt } from '@/config/fonts';
 import Image from 'next/image';
-import Link from 'next/link';
+import { LoginForm } from './ui/LoginForm';
+import { Suspense } from 'react';
+import { getServerSession } from 'next-auth';
+import { authConfig } from '@/auth.config';
+import { redirect } from 'next/navigation';
 
-export default function LoginPage() {
+export default async function LoginPage() {
 
-  const onLogin = ( event: React.FormEvent ) => {
-        event.preventDefault();
-        // TODO: Implementar Login
-    }
+  const session = await getServerSession(authConfig);
+  if( session?.user )
+    redirect( '/' );
 
   return (
     <div className="flex flex-col min-h-screen justify-center px-12 w-full sm:w-[620px] xl:w-full sm:mx-auto" >
@@ -23,44 +25,11 @@ export default function LoginPage() {
                 />
 
       <h1 className={ `${ montserAlt.className } text-3xl mb-5` }>Ingresar</h1>
-
-      <div className="flex flex-col" >
-
-        <label htmlFor="email" className='font-bold'>Correo electrónico:</label>
-        <input
-          className="px-5 py-2 border bg-gray-50 rounded mb-5"
-          type="email"
-          name='email'
-          placeholder='Correo electrónico' />
-
-
-        <label htmlFor="password" className='font-bold'>Contraseña:</label>
-        <input
-          className="px-5 py-2 border bg-gray-50 rounded mb-5"
-          type="password"
-          name='password'
-          placeholder='Contraseña' />
-        <button
-          
-          className="btn-primary font-normal tracking-wide shadow-sm hover:shadow-none">
-          Ingresar
-        </button>
-
-
-        {/* divisor line */ }
-        <div className="flex items-center my-5">
-          <div className="flex-1 border-t-2 border-gray-300 rounded"></div>
-          <div className="px-2 text-gray-400">O</div>
-          <div className="flex-1 border-t-2 border-gray-300 rounded"></div>
-        </div>
-
-        <Link
-          href="/auth/new-account" 
-          className="btn-secondary text-center mb-10">
-          Crear una cuenta
-        </Link>
-
-      </div>
+      
+      <Suspense fallback={ <div className='animate-pulse text-gray-500'>Cargando...</div> } >
+        <LoginForm/>
+      </Suspense>
+      
     </div>
   );
 }

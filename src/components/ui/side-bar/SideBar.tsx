@@ -2,11 +2,11 @@
 
 import { IoCloseOutline, IoSearchOutline } from "react-icons/io5";
 import { SideMenu } from "./side-menu/SideMenu";
-import { useUIStore } from "@/components/store/store";
+import { useUIStore } from "@/components/store/UIStore";
 import clsx from "clsx";
 
 export const SideBar = () => {
-  const { openSideMenu, closeSideMenu, isSideMenuOpen } = useUIStore( (state) => state);
+  const { closeSideMenu, isSideMenuOpen } = useUIStore( (state) => state);
 
   const onCloseSideBar = () => {
     closeSideMenu();
@@ -18,7 +18,8 @@ export const SideBar = () => {
           {/* Black Background */}
           <div className="fixed top-0 left-0 w-screen h-screen z-10 bg-black opacity-30"></div>
           {/* Blur */}
-          <div className="fade-in fixed top-0 left-0 w-screen h-screen z-10 backdrop-filter backdrop-blur-[2px]"></div>
+          <div className="fade-in fixed top-0 left-0 w-screen h-screen z-10 backdrop-filter backdrop-blur-[2px]"
+               onClick={onCloseSideBar}></div>
         </>
       )}
 

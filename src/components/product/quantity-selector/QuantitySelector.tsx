@@ -4,14 +4,14 @@ import clsx from "clsx";
 import { IoAddCircleOutline, IoRemoveCircleOutline } from "react-icons/io5"
 
 interface Props {
-    minInput: number,
-    maxInput: number,
+    minInput?: number,
+    maxInput?: number,
     selectedQuantity: number,
     onChangeQuantity: ( quantity: number )=> void
 }
 
 
-export const QuantitySelector = ({ minInput, maxInput, selectedQuantity, onChangeQuantity }: Props) => {
+export const QuantitySelector = ({ minInput=1, maxInput=1000, selectedQuantity, onChangeQuantity }: Props) => {
 
     const addItem = () => {
         if( selectedQuantity + 1 >= maxInput  )
@@ -31,7 +31,9 @@ export const QuantitySelector = ({ minInput, maxInput, selectedQuantity, onChang
   return (
     <div className="flex flex-row my-2">
         <button onClick={ () =>  removeItem() } >
-            <IoRemoveCircleOutline size={30} className={ clsx( {"text-gray-400": selectedQuantity === minInput} ) }/>
+            <IoRemoveCircleOutline size={30} className={ clsx( {"text-gray-400": selectedQuantity === minInput,
+                                                                 "cursor-pointer": selectedQuantity !== minInput,}
+             ) }/>
         </button>
         <input  className="w-20 mx-3 px-5 text-center bg-gray-200 rounded-md font-semibold text-gray-600"
                 min={minInput}
@@ -41,7 +43,9 @@ export const QuantitySelector = ({ minInput, maxInput, selectedQuantity, onChang
                 readOnly
                 />
         <button onClick={ () => addItem() } >
-            <IoAddCircleOutline size={30} className={ clsx( {"text-gray-400": selectedQuantity === maxInput} ) }/>
+            <IoAddCircleOutline size={30} className={ clsx( {"cursor-pointer text-gray-400": selectedQuantity === maxInput,
+                                                             "cursor-pointer": selectedQuantity !== minInput,}
+             ) }/>
         </button>
     </div>
   )

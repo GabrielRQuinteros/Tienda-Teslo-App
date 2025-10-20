@@ -1,8 +1,12 @@
+
 import type { Metadata } from "next";
+
+import { Toaster } from 'react-hot-toast';
 
 import "./globals.css";
 import { geistMono, geistSans } from "@/config/fonts";
-
+import { AuthProvider } from "@/components";
+import { toastDefaultOptions } from "@/components/toasts/toastBase.config";
 
 
 export const metadata: Metadata = {
@@ -23,7 +27,13 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <AuthProvider>
+          {children}
+          <Toaster
+            position="top-right"
+            toastOptions= { toastDefaultOptions }
+          />
+        </AuthProvider>
       </body>
     </html>
   );

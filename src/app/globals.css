@@ -50,9 +50,49 @@ body {
 
 
 .btn-primary {
-  @apply bg-blue-600 hover:bg-blue-800 text-white py-2 px-4 rounded transition-all;
+  @apply bg-gray-900 border border-transparent hover:bg-white text-white hover:text-gray-900 hover:border hover:border-gray-900 py-2 px-4 rounded transition-all font-bold;
 }
 
 .btn-secondary {
   @apply bg-gray-200 hover:bg-gray-300 text-black py-2 px-4 rounded transition-all;
+}
+
+.btn-primary:disabled {
+  @apply bg-gray-700 cursor-not-allowed text-white border-gray-700;
+}
+.btn-primary:disabled:hover {
+  @apply bg-gray-700 cursor-not-allowed text-white border-gray-700;
+}
+
+
+@keyframes custom-enter {
+    0% {
+        transform: scale(.9);
+        opacity: 0
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1
+    }
+}
+
+.animate-custom-enter {
+    animation: custom-enter .2s ease-out
+}
+
+@keyframes custom-leave {
+    0% {
+        transform: scale(1);
+        opacity: 1
+    }
+
+    to {
+        transform: scale(.9);
+        opacity: 0
+    }
+}
+
+.animate-custom-leave {
+    animation: custom-leave .15s ease-in forwards
 }
