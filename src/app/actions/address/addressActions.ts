@@ -3,6 +3,7 @@
 import { Address, createServerResponse } from "@/helpers";
 import prisma from "@/lib/prisma/prisma";
 import { StatusCodes } from "http-status-codes";
+import { string } from "zod";
 
 export async function saveUserAddress( newAddress:Address, userId: string ) {
   
@@ -131,4 +132,17 @@ export interface UserAddressResponse {
   phone: string;
   countryId: string;
   country: CountryResponse;
+}
+
+
+export const getCountryById = async ( id: string ) => {
+
+  const country = await prisma.country.findFirst( { where: { id: id } } );
+  
+  if( !country )
+    return createServerResponse( false, StatusCodes.NOT_FOUND, null, "El país buscado no existe" );
+
+  const countryResponse: CountryResponse = { id: country.id, name: country.name };
+  return createServerResponse( true, StatusCodes.OK, countryResponse, null );
+
 }

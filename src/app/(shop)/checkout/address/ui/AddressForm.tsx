@@ -7,6 +7,7 @@ import { useState } from "react";
 import { RegisterOptions, SubmitHandler, useForm } from "react-hook-form";
 import { useSession } from "next-auth/react";
 import { showErrorToast } from "@/helpers/toast-funtions/ToastFunctions";
+import { useRouter } from "next/navigation";
 
 
 
@@ -54,11 +55,10 @@ export const AddressForm = ( { countries = [], defaultUserAddress }:Props ) => {
         required: 'Este campo es un campo requerido',
     }
     
-    
+    const router = useRouter();
     const [rememberAddressCheck, setRememberAddressCheck] = useState(Boolean(defaultUserAddress));
     const toggleCheckbox = () => setRememberAddressCheck( checkboxValue => !checkboxValue );
-    const { setAddressFromStore, getAddressFromStore } = useAddressStore();
-    // const storeDefaultAddress: Address | undefined = getAddressFromStore();
+    const { setAddressFromStore } = useAddressStore();
     let defaultValues: Partial<FormInputs> = { };
     
     if( defaultUserAddress ) {
@@ -75,6 +75,7 @@ export const AddressForm = ( { countries = [], defaultUserAddress }:Props ) => {
     const onSubmit: SubmitHandler<FormInputs> = async ( dataInputs: FormInputs ) => {
         const  { address1, address2, city, country, firstname, lastname, phone, zipCode } = dataInputs;
         const  newAddress: Address = { address1, address2, city, country, firstname, lastname, phone, zipCode };
+        
         setAddressFromStore(newAddress);
 
         if( rememberAddressCheck ) {
@@ -85,13 +86,12 @@ export const AddressForm = ( { countries = [], defaultUserAddress }:Props ) => {
           }
         } else {
           const response = await deleteUserAddress(session!.user.id);
-          setAddressFromStore(undefined);
           if( !response.ok) {
               showErrorToast("Ups! No se pudo eliminar la dirección guardada para futuras compras.")
               return;
           }
         }
-        
+        router.push( '/checkout' );
     }
     
     

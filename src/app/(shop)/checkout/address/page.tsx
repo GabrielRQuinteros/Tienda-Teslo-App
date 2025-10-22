@@ -4,6 +4,7 @@ import { getAllCountries } from "@/app/actions/countries/countriesActions";
 import { getServerSession, Session } from "next-auth";
 import { getUserAddress, UserAddressResponse } from "@/app/actions/address/addressActions";
 import { redirect } from "next/navigation";
+import { authConfig } from "@/auth.config";
 
 
 
@@ -15,9 +16,8 @@ export const metadata = {
 export default async function CheckoutPage() {
 
   const countries = await getAllCountries();
-  const session: Session | null = await getServerSession();
-  const userId = session!.user.
-
+  const session: Session | null = await getServerSession(authConfig);
+  const userId = session!.user.id;
   const response = await getUserAddress( userId );
   if( ! response.ok ) {
     redirect('/');

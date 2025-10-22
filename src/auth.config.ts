@@ -52,27 +52,34 @@ export const authConfig: NextAuthOptions = {
     signIn: async ({ user, account, credentials, email, profile }) => {
       return true;
     },
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
+      // Solo tenemos el user completo durante el login
       if (user) {
         token.id = user.id;
-      }
-      const userId = user?.id || (token.id as string);
-      if (userId) {
+        // Aquí podemos cargar datos adicionales del usuario
         const userFromDB = await prisma.user.findUnique({
-          where: { id: userId },
+          where: { id: user.id },
         });
         if (userFromDB) {
           token.roles = userFromDB.roles ?? [];
           token.isActive = userFromDB.isActive;
         }
       }
+      
+      // Para actualizar la sesión cuando se modifiquen datos del usuario
+      if (trigger === "update" && session) {
+        // Aquí puedes actualizar el token si es necesario
+        return { ...token, ...session };
+      }
+      
       return token;
     },
+    
     async session({ session, token }) {
-
-      if( session && session.user ) {
-        session.user.roles = token.roles;
-        session.user.id = token.id!;
+      if (session?.user) {
+        session.user.id = token.id as string;
+        session.user.roles = token.roles as string[];
+        session.user.isActive = token.isActive as boolean;
       }
       return session;
     },
