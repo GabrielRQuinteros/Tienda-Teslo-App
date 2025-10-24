@@ -1,75 +1,32 @@
+import { getOrdersByUser } from '@/actions';
+import { OrderResume } from '@/actions/orders/interfaces/interfases';
+import { authConfig } from '@/auth.config';
 import { Title } from '@/components';
+import { OrderTable } from '@/components/orders/OrderTable/OrderTable';
+import { getServerSession } from 'next-auth';
+import { redirect } from 'next/navigation';
 
-import Link from 'next/link';
-import { IoCardOutline } from 'react-icons/io5';
+// Hecho para que no cachee esta pagina.
+export const revalidate=0;
 
-export default function OrdersPage() {
+export default async function OrdersPage() {
+
+  const session = await getServerSession( authConfig );
+  const sessionUserId = session?.user.id;
+  if( !sessionUserId )
+    redirect('/');
+
+  const response = await getOrdersByUser(session.user.id);
+
+  if( !response.ok )
+    redirect('/');
+
+  const resumedOrdersList = (response.data as OrderResume[]);
   return (
     <>
       <Title title="Orders" />
-
       <div className="mb-10">
-        <table className="min-w-full">
-          <thead className="bg-gray-200 border-b">
-            <tr>
-              <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                #ID
-              </th>
-              <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                Nombre completo
-              </th>
-              <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                Estado
-              </th>
-              <th scope="col" className="text-sm font-medium text-gray-900 px-6 py-4 text-left">
-                Opciones
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-
-            <tr className="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100">
-
-              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">1</td>
-              <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                Mark
-              </td>
-              <td className="flex items-center text-sm  text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-
-                <IoCardOutline className="text-green-800" />
-                <span className='mx-2 text-green-800'>Pagada</span>
-
-              </td>
-              <td className="text-sm text-gray-900 font-light px-6 ">
-                <Link href="/orders/123" className="hover:underline">
-                  Ver orden
-                </Link>
-              </td>
-
-            </tr>
-
-            <tr className="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100">
-
-              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">1</td>
-              <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                Mark
-              </td>
-              <td className="flex items-center text-sm  text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-
-                <IoCardOutline className="text-red-800" />
-                <span className='mx-2 text-red-800'>No Pagada</span>
-
-              </td>
-              <td className="text-sm text-gray-900 font-light px-6 ">
-                <Link href="/orders/123" className="hover:underline">
-                  Ver orden
-                </Link>
-              </td>
-
-            </tr>
-
-          </tbody>
-        </table>
+        <OrderTable resumedOrdersList={resumedOrdersList} />
       </div>
     </>
   );

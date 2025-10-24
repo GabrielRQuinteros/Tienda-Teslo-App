@@ -13,6 +13,7 @@ interface Props {
 
 export const QuantitySelector = ({ minInput=1, maxInput=1000, selectedQuantity, onChangeQuantity }: Props) => {
 
+    console.log("ESTE ES MI SELECTED QUANTITY ", selectedQuantity)
     const addItem = () => {
         if( selectedQuantity + 1 >= maxInput  )
             onChangeQuantity(maxInput);
@@ -38,13 +39,14 @@ export const QuantitySelector = ({ minInput=1, maxInput=1000, selectedQuantity, 
         <input  className="w-20 mx-3 px-5 text-center bg-gray-200 rounded-md font-semibold text-gray-600"
                 min={minInput}
                 max={maxInput}
-                value={selectedQuantity}
+                value={maxInput > 0 ?selectedQuantity:0}
                 inputMode="numeric"
                 readOnly
+                id="quantity-selector"
                 />
         <button onClick={ () => addItem() } >
-            <IoAddCircleOutline size={30} className={ clsx( {"cursor-pointer text-gray-400": selectedQuantity === maxInput,
-                                                             "cursor-pointer": selectedQuantity !== minInput,}
+            <IoAddCircleOutline size={30} className={ clsx( {"text-gray-400": selectedQuantity === maxInput,
+                                                             "cursor-pointer": selectedQuantity !== maxInput,}
              ) }/>
         </button>
     </div>

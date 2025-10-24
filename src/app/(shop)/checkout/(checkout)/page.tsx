@@ -2,6 +2,7 @@ import { Title } from "@/components";
 import Link from "next/link";
 import { ProductsInCartResume } from "./ui/ProductsInCartResume";
 import { PlaceOrder } from "./ui/PlaceOrder";
+import { montserAlt } from "@/config/fonts";
 
 export default function CheckoutPage() {
 
@@ -14,7 +15,7 @@ export default function CheckoutPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 md:gap-10">
           {/* Carrito */}
           <div className="flex flex-col mt-5">
-            <span className="text-lg">Ajustar elementos</span>
+            <span className={`text-lg font-bold ${montserAlt.className}`}>Ajustar elementos</span>
             <Link href="/cart" className="underline mb-5 text-gray-500 tracking-wide hover:text-gray-700">
               Editar carrito
             </Link>

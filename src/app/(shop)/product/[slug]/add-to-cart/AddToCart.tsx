@@ -11,7 +11,7 @@ interface Props {
 export const AddToCart = ({ product }: Props) => {
 
     const [size, setSize] = useState<Size|undefined>(undefined);
-    const [quantity, setQuantity] = useState<number>(1);
+    const [quantity, setQuantity] = useState<number>( product.inStock > 0 ? 1: 0 );
 
     const [isPristine, setIsPristine] = useState<boolean>(true);
     const { addCartProduct }= useCartStore();
@@ -53,9 +53,10 @@ export const AddToCart = ({ product }: Props) => {
         <SizeSelector avialableSizes={product.sizes} selectedSize={ size } onSizeSelect={ onSizeSelect }  />
 
         {/* Selector de Cantidad */}
-        <QuantitySelector minInput={1} maxInput={product.inStock} selectedQuantity={quantity} onChangeQuantity={onQuantityChange}/>
+        <QuantitySelector minInput={ product.inStock > 0 ? 1: 0 } maxInput={product.inStock} selectedQuantity={quantity} onChangeQuantity={onQuantityChange}/>
         {/* Botón de agregar al carrito */}
-        <button className="py-2 px-6 max-w-80 bg-sky-700 rounded-md text-white text-lg mt-3 cursor-pointer"
+        <button className="btn-primary w-full  mx-auto text-lg mt-3 cursor-pointer"
+                disabled={quantity === 0 || quantity > product.inStock }
                 onClick={onAddToCart}
             >
             Agregar al carrito

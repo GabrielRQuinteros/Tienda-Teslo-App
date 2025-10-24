@@ -1,15 +1,16 @@
-import { Product, Title } from "@/components";
-import Link from "next/link";
-import { initialData } from "@/seed/seed";
-import Image from "next/image";
+import { Size, Title } from "@/components";
 import clsx from "clsx";
 import { IoCardOutline } from "react-icons/io5";
-
-const productsInCart: Product[] = [
-  initialData.products[0],
-  initialData.products[1],
-  initialData.products[2],
-];
+import { AddressResume } from "../../checkout/(checkout)/ui/AddressResume";
+import { OrderResume } from "../../checkout/(checkout)/ui/OrderResume";
+import { getOrderById } from "@/actions";
+import { showErrorToast } from "@/helpers/toast-funtions/ToastFunctions";
+import { redirect } from "next/navigation";
+import { OrderResponse } from "@/actions/orders/interfaces/interfases";
+import { Address } from "@/helpers";
+import { CartProduct } from "@/components/store/CartStore";
+import { ProductsResume } from "@/components/cart/ui/products-resume/ProductsResume";
+import { OrderStatus } from "@/components/cart/ui/order-status/OrderStatus";
 
 interface Props {
   params: {
@@ -19,9 +20,36 @@ interface Props {
 
 export default async function OrderPage({ params }: Props) {
   const { id } = await params;
+  const response = await getOrderById(id);
 
-  // Verificacion, Orden existe y si es del usuario
-  // Else redirect
+  if( ! response.ok ) {
+    showErrorToast(response.message!);
+    redirect('/');
+  }
+
+  const order = ( response.data as OrderResponse); 
+
+  const address: Address = {
+    firstname: order.OrderAddress.firstName,
+    lastname: order.OrderAddress.lastName,
+    address1: order.OrderAddress.address,
+    address2: order.OrderAddress.address2 ?? '',
+    zipCode: order.OrderAddress.postalCode,
+    city: order.OrderAddress.city,
+    country: order.OrderAddress.countryId,
+    phone: order.OrderAddress.phone,
+  };
+
+  const products: CartProduct[] = order.OrderItem.map(item => ({
+      productId: item.productId,
+      slug: item.product.slug,
+      title: item.product.title,
+      price: item.price,
+      quantity: item.quantity,
+      size: item.size as Size,
+      image: item.product.images[0].url
+    }));
+
 
   return (
     <div className="flex justify-center items-center mb-72 px-10 sm:px-0">
@@ -32,94 +60,19 @@ export default async function OrderPage({ params }: Props) {
           <div className="flex flex-col mt-5">
             {/* Items List */}
             <div className="flex flex-col gap-2 mt-4">
-              {productsInCart.map((prod) => (
-                <div key={prod.slug} className="flex">
-                  <Image
-                    src={`/products/${prod.images[0]}`}
-                    width={100}
-                    height={100}
-                    alt={prod.title}
-                    className="mr-5 rounded"
-                    style={{
-                      width: "100px",
-                      height: "100px",
-                    }}
-                  />
-                  <div className="">
-                    <p className="">{prod.title}</p>
-                    <p className="">${prod.price} x 3</p>
-                    <p className="font-bold">Subtotal: ${prod.price * 3}</p>
-                  </div>
-                </div>
-              ))}
+              <ProductsResume products={products} />
             </div>
           </div>
 
           {/* Checkout - Resumen de Orden de Compra */}
           <div className="bg-white p-7 shadow-lg rounded-xl flex flex-col mt-4 md:mt-0">
-            <h2 className="w-full text-center text-xl font-bold mb-2">
-              Dirección de entrega
-            </h2>
-
-            <div className="grid grid-cols-2 mb-10">
-              <div className="col-span-1">
-                <p className="text-lg">Nombre usuario:</p>
-                <p>Calle y numero:</p>
-                <p>Ciudad:</p>
-                <p>País:</p>
-                <p>Código Postal:</p>
-                <p>Teléfono:</p>
-              </div>
-              <div className="col-span-1">
-                <p className="text-lg">{"Gabriel Quinteros"}</p>
-                <p>{"San Martin 1234"}</p>
-                <p>{"Buenos Aires"}</p>
-                <p>{"Argentina"}</p>
-                <p>{"1888"}</p>
-                <p>{"011-1234-1234"}</p>
-              </div>
-            </div>
-
+            <AddressResume address={ address }/>
             {/* Divider */}
             <div className="w-full h-0.5 rounded bg-gray-200 mb-10" />
-
-            <h2 className="w-full text-center text-xl font-bold">
-              Resumen de Orden
-            </h2>
-            <div className="grid grid-cols-3 mt-3 gap-3">
-              <span className="col-span-2 font-semibold">Nro. Productos</span>
-              <span className="col-span-1 text-right font-semibold">
-                3 artículos
-              </span>
-
-              <span className="col-span-2">Subtotal</span>
-              <span className="col-span-1 text-right">$300.000</span>
-
-              <span className="col-span-2">Impuestos (15%)</span>
-              <span className="col-span-1 text-right">$60.000</span>
-
-              <span className="col-span-2 text-xl font-bold mt-auto">
-                Total
-              </span>
-              <span className="col-span-1 text-right text-xl font-bold">
-                $60.000
-              </span>
-            </div>
+            <OrderResume productsList={products}/>
 
             <div className="mt-5 w-full">
-              <div
-                className={clsx(
-                  "flex items-center rounded-lg py-2 px-3.5 text-xs font-bold text-white mb-5",
-                  {
-                    "bg-red-400": false,
-                    "bg-green-500": true,
-                  }
-                )}
-              >
-                <IoCardOutline size={30} />
-                {/* <span className="mx-2">Pendiente de Pago</span> */}
-                <span className="mx-2">Pagada</span>
-              </div>
+              <OrderStatus isPaid={ order.isPaid } />
             </div>
           </div>
         </div>

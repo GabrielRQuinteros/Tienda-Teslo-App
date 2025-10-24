@@ -31,6 +31,9 @@ export async function main() {
         return;
 
       try{
+        await prisma.orderItem.deleteMany();
+        await prisma.orderAddress.deleteMany();
+        await prisma.order.deleteMany();
         await prisma.productImage.deleteMany();
         await prisma.product.deleteMany();
         await prisma.category.deleteMany();

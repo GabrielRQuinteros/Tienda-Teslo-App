@@ -4,13 +4,16 @@ import { AddressResume } from './AddressResume'
 import { useAddressStore } from '@/components/store/AddressStore'
 import { useCartStore } from '@/components/store/CartStore'
 import { OrderResume } from './OrderResume';
-import { showErrorToast } from '@/helpers/toast-funtions/ToastFunctions';
+import { showErrorToast, showSuccessToast } from '@/helpers/toast-funtions/ToastFunctions';
 import clsx from 'clsx';
-import { sleep } from '@/helpers/devtools/devtools';
+import { createOrder } from '@/actions';
+import { CreateOrderResponse, OrderItem, OrderRequest } from '@/actions/orders/interfaces/interfases';
+import { useRouter } from 'next/navigation';
 
 export const PlaceOrder = () => {
     const { address } = useAddressStore();
-    const { productsInCart } = useCartStore();
+    const { productsInCart, clearCart } = useCartStore();
+    const router = useRouter();
 
     const [ isSubmitting, setIsSubmitting] = useState(false);
 
@@ -19,11 +22,22 @@ export const PlaceOrder = () => {
     const onPlaceOrder = async() => {
        setIsSubmitting(true);
 
-       const productsToOrder = productsInCart.map( prod => ({ id: prod.productId, size: prod.size, quantity: prod.quantity,  }) )
-       await sleep(5000);
-      // TODO: Consultar a una api o cun un server action si la orden es valida.
-      showErrorToast("Ha ocurrido un error y no se ha podido aceptar su orden");
+       const productsToOrder: OrderItem[] = productsInCart.map( prod => ({ productId: prod.productId, size: prod.size, quantity: prod.quantity} as OrderItem) )
+       
+       const requestData: OrderRequest = { address: address!, orderItems: productsToOrder};
+
+       const response = await createOrder( requestData );
+       
+       if( ! response.ok ) {
+          setIsSubmitting(false);
+          showErrorToast( response.message! )
+          return;
+       }
+       clearCart();
+      const orderId = (response.data as CreateOrderResponse).id;
       setIsSubmitting(false);
+      showSuccessToast("Se ha creado la orden correctamente.")
+      router.push( `/orders/${orderId}`);
     }
 
   return (
@@ -50,7 +64,7 @@ export const PlaceOrder = () => {
               <button 
                     // href={"/orders/1234"}
                     onClick={onPlaceOrder}
-                    disabled={ isSubmitting }
+                    disabled={ isSubmitting || productsInCart.length === 0 }
                     className={ clsx( "flex btn-primary justify-center items-center gap-2 w-full",
                                 { "opacity-60 cursor-not-allowed":  isSubmitting,
                                   "cursor-pointer": !isSubmitting
