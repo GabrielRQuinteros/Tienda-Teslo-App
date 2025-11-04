@@ -13,7 +13,7 @@ export const OrderTable = ( { resumedOrdersList }: Props ) => {
                 #ID
               </th>
               <th scope="col" className="text-sm font-semibold text-gray-900 px-6 py-4 text-left">
-                Nombre completo
+                Receptor
               </th>
               <th scope="col" className="text-sm font-semibold text-gray-900 px-6 py-4 text-left">
                 Estado

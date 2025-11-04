@@ -1,4 +1,4 @@
-import { Size, Title } from "@/components";
+import { CustomPaypalButton, PaymentSection, Size, Title } from "@/components";
 import clsx from "clsx";
 import { IoCardOutline } from "react-icons/io5";
 import { AddressResume } from "../../checkout/(checkout)/ui/AddressResume";
@@ -60,6 +60,7 @@ export default async function OrderPage({ params }: Props) {
           <div className="flex flex-col mt-5">
             {/* Items List */}
             <div className="flex flex-col gap-2 mt-4">
+              <OrderStatus isPaid={ order.isPaid } />
               <ProductsResume products={products} />
             </div>
           </div>
@@ -72,8 +73,9 @@ export default async function OrderPage({ params }: Props) {
             <OrderResume productsList={products}/>
 
             <div className="mt-5 w-full">
-              <OrderStatus isPaid={ order.isPaid } />
+              
             </div>
+            <PaymentSection order={order}  />
           </div>
         </div>
       </div>

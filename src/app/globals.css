@@ -64,6 +64,18 @@ body {
   @apply bg-gray-700 cursor-not-allowed text-white border-gray-700;
 }
 
+.text-input {
+  @apply bg-white border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500
+}
+
+.select-input {
+  @apply bg-white border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500
+}
+
+.label {
+  @apply  block mb-2 text-sm font-medium text-gray-900 dark:text-white
+}
+
 
 @keyframes custom-enter {
     0% {
@@ -96,3 +108,33 @@ body {
 .animate-custom-leave {
     animation: custom-leave .15s ease-in forwards
 }
+
+/* ESTILOS DE PAYPAL */
+.spinner {
+    display: inline-block;
+    height: 40px;
+    width: 40px;
+    box-sizing: border-box;
+    border: 3px solid rgba(0, 0, 0, 0.2);
+    border-top-color: rgba(33, 128, 192, 0.8);
+    border-radius: 100%;
+    animation: rotation 0.7s infinite linear;
+}
+
+.spinner.tiny {
+    height: 20px;
+    width: 20px;
+    border-top-color: #007bff;
+    position: relative;
+    top: 3px;
+}
+
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(359deg);
+    }
+}
+/* FIN ESTILOS DE PAYPAL */

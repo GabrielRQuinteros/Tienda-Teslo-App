@@ -22,7 +22,7 @@ export default function CheckoutPage() {
 
             {/* Items List */}
             <div className="flex flex-col gap-2 mt-4">
-            <ProductsInCartResume/>
+              <ProductsInCartResume/>
             </div>
           </div>
           

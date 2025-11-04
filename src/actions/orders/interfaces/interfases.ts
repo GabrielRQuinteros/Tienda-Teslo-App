@@ -88,3 +88,11 @@ export interface OrderResume {
     lastName: string;
 }
 
+
+export interface UserResume {
+  id: string;
+  name: string;
+  email: string;
+  roles: string[];
+  isActive: boolean;
+}

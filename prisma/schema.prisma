@@ -29,6 +29,23 @@ enum Role {
   user
 }
 
+enum Currency {
+  USD
+  EUR
+  ARS
+}
+enum TransactionStatus {
+  initiated
+  succeeded
+  failed
+  refounded
+}
+enum PaymentStatus {
+  pending
+  succeded
+  failed
+}
+
 model Category {
   id            String    @id       @default( uuid() )
   name          String    @unique
@@ -157,23 +174,25 @@ model UserAddress {
 
 
 model Order {
-  id           String    @id @default(uuid())
-  subTotal     Float
-  tax          Float
-  total        Float
-  itemsInOrder Int
-  isPaid       Boolean  @default(false)
-  paidAt       DateTime?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id              String    @id @default(uuid())
+  subTotal        Float
+  tax             Float
+  total           Float
+  itemsInOrder    Int
+  isPaid          Boolean  @default(false)
+  paidAt          DateTime?
+  transactionId   String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
-  
 
   // Relaciones
   user   User   @relation(fields: [userId], references: [id])
   userId String
   OrderItem    OrderItem[]
   OrderAddress OrderAddress?
+
+  // payments        Payment[]
 }
 
 model OrderItem {
@@ -203,3 +222,91 @@ model OrderAddress {
   Order   Order  @relation(fields: [orderId], references: [id])
   orderId String @unique
 }
+
+/// RELACIONES CREADAS PARA PAGOS ////
+
+// model Payment {
+//   id                String         @id @default(cuid())
+//   status            PaymentStatus  // pending, completed, failed
+//   createdAt         DateTime       @default(now())
+//   updatedAt         DateTime       @updatedAt
+
+//   order             Order           @relation(fields: [orderId], references: [id])
+//   orderId           String
+
+//   transactions      Transaction[]
+// }
+
+// model Transaction {
+//   id                    String               @id @default(cuid())
+//   providerTransactionId String?              
+//   status                TransactionStatus    @default(initiated)
+//   currency              Currency
+//   amount                Float
+//   createdAt             DateTime             @default(now())
+//   updatedAt             DateTime             @updatedAt
+
+//   payment               Payment              @relation(fields: [paymentId], references: [id])
+//   paymentId             String
+
+//   provider              PaymentProvider      @relation(fields: [providerId], references: [id])
+//   providerId            String
+
+//   paypalDetails         PaypalTransactionDetails?
+// }
+
+
+// model PaymentProvider {
+//   id              String         @id @default(cuid())
+//   name            String         @unique
+//   displayName     String
+//   active          Boolean        @default(true)
+//   createdAt       DateTime       @default(now())
+//   updatedAt       DateTime       @updatedAt
+
+//   transactions    Transaction[]
+// }
+
+// model PaypalTransactionDetails {
+//   id                        String    @id @default(cuid())
+//   transactionEventCode      String?
+//   protectionEligibility     String?
+//   transactionInitiationDate DateTime?
+//   transactionUpdatedDate    DateTime?
+
+  
+//   transactionAmount         Float?
+//   transactionCurrency       String?
+//   feeAmount                 Float?
+//   feeCurrency               String?
+//   insuranceAmount           Float?
+//   insuranceCurrency          String?
+//   shippingAmount            Float?
+//   shippingCurrency           String?
+//   shippingDiscountAmount    Float?
+//   shippingDiscountCurrency   String?
+
+//   // Información del pagador
+//   payerAccountId            String?
+//   payerEmail                String?
+//   payerName                 String?
+//   payerCountryCode          String?
+
+//   // Dirección de envío
+//   shippingName              String?
+//   shippingLine1             String?
+//   shippingLine2             String?
+//   shippingCity              String?
+//   shippingCountryCode       String?
+//   shippingPostalCode        String?
+
+//   // Factura e información adicional
+//   invoiceId                 String?
+//   transactionSubject        String?
+//   transactionNote           String?
+//   customField               String?
+
+//   // Relación con Transaction
+//   transaction               Transaction @relation(fields: [transactionId], references: [id])
+//   transactionId             String      @unique
+// }

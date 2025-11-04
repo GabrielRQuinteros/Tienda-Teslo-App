@@ -28,7 +28,7 @@ export const menuItems1: MenuItemData[] = [
     { order: 4, label: 'Salir', href: "/auth/logout",  icon: React.createElement(IoLogOutOutline, { size: 30 }), aditionalActions: logoutAction},    
 ]
 export const menuItems2: MenuItemData[] = [
-    { order: 5, label: 'Productos', href: "/products-admin", icon: React.createElement(IoShirtOutline, { size: 30 })},
-    { order: 6, label: 'Todas las Ordenes', href: "/orders-admin", icon: React.createElement(IoTicketOutline, { size: 30 })},
-    { order: 7, label: 'Usuarios', href: "/users-admin", icon: React.createElement(IoPeopleOutline, { size: 30 })},
+    { order: 5, label: 'Productos', href: "/admin/products", icon: React.createElement(IoShirtOutline, { size: 30 })},
+    { order: 6, label: 'Todas las Ordenes', href: "/admin/orders", icon: React.createElement(IoTicketOutline, { size: 30 })},
+    { order: 7, label: 'Usuarios', href: "/admin/users", icon: React.createElement(IoPeopleOutline, { size: 30 })},
 ]

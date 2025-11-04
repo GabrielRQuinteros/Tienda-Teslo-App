@@ -5,7 +5,7 @@ import { Toaster } from 'react-hot-toast';
 
 import "./globals.css";
 import { geistMono, geistSans } from "@/config/fonts";
-import { AuthProvider } from "@/components";
+import { Providers } from "@/components";
 import { toastDefaultOptions } from "@/components/toasts/toastBase.config";
 
 
@@ -27,13 +27,13 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <AuthProvider>
+        <Providers>
           {children}
           <Toaster
             position="top-right"
             toastOptions= { toastDefaultOptions }
           />
-        </AuthProvider>
+        </Providers>
       </body>
     </html>
   );

@@ -20,12 +20,12 @@ export const OrderTableRow = ( {orderResumed:{ firstName, lastName, isPaid, id }
                     isPaid? 
                     <>
                         <IoCardOutline className="text-green-800" />
-                        <span className='mx-2 text-green-800'>Pagada </span>
+                        <span className='mx-2 text-green-800'>Paga </span>
                     </>
                     :
                     <>
                         <IoCardOutline className="text-red-800" />
-                        <span className='mx-2 text-red-800'>No Pagada</span>
+                        <span className='mx-2 text-red-800'>No Paga</span>
                     </>
                 }
 
