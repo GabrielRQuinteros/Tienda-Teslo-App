@@ -3,6 +3,7 @@ import { UserResume } from '@/actions/orders/interfaces/interfases';
 import { authConfig } from '@/auth.config';
 import { Title, UserFilters } from '@/components';
 import UserFilterBar from '@/components/admin/filters/users-filter-bar/UserFilterBar';
+import { PaginationBarClient } from '@/components/ui/pagination-bar-client/PaginationBarClient';
 import { UserCardList } from '@/components/users/UserCardList/UserCardList';
 import { UserTable } from '@/components/users/UserTable/UserTable';
 import { PaginatedResponse } from '@/helpers';
@@ -44,9 +45,12 @@ export default async function AdminUserPage({ searchParams = {} }: UserProps) {
   if( !response.ok )
     redirect('/');
   const resumedUsersList = (response.data as PaginatedResponse<UserResume>).data;
+
+  const currentPage = response.data!.currentPage;
+  const totalPages = response.data!.totalPages;
   return (
     <>
-      <Title title="Usuarios del Sistema" />
+      <Title title="Administración de Usuarios" />
       <div className="mb-10">
         <UserFilterBar/>
         <div className="hidden md:block">
@@ -56,6 +60,7 @@ export default async function AdminUserPage({ searchParams = {} }: UserProps) {
           <UserCardList resumedUsersList={resumedUsersList} />
         </div>
       </div>
+      <PaginationBarClient currentPage={currentPage} totalPages={totalPages} showFirstLast={true}  />
     </>
   );
 }

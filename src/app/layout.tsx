@@ -1,6 +1,5 @@
 
 import type { Metadata } from "next";
-
 import { Toaster } from 'react-hot-toast';
 
 import "./globals.css";
@@ -23,7 +22,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" >
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

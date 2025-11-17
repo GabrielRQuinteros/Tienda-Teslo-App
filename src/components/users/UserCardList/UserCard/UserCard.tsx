@@ -50,7 +50,7 @@ export const UserCard = ({ userResumed: { id, name, email, isActive, roles } }: 
           href={`/admin/users/${id}`}
           className="text-gray-500 hover:underline text-[15px] font-semibold flex items-center gap-2"
         >
-          Ver más <IoArrowForward size={18} />
+          Editar <IoArrowForward size={18} />
         </Link>
       </div>
     </div>

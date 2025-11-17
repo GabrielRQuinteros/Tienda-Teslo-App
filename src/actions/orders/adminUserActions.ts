@@ -4,7 +4,7 @@ import { getServerSession } from "next-auth";
 import { authConfig } from "@/auth.config";
 import { StatusCodes } from "http-status-codes";
 import { calculatePagination, createServerResponse, DEFAULT_PAGE_SIZE } from "@/helpers";
-import { UserResume } from "./interfaces/interfases";
+import { UserResume } from './interfaces/interfases';
 import { Prisma, Role, User } from "@/generated/prisma";
 import { UserFilters } from "@/components";
 import prisma from "@/lib/prisma/prisma";
@@ -87,8 +87,6 @@ export async function getPaginatedUsers(page: number = 0, userFilters: UserFilte
 export async function buildUserWhere(filters: UserFilters): Promise<Prisma.UserWhereInput> {
   const where: Prisma.UserWhereInput = {};
 
-  console.table(filters);
-
   if (filters.id && filters.id.trim() !== "") {
     where.id = {
       contains: filters.id.trim(),
@@ -130,3 +128,95 @@ const roleFromString = (value: string): Role | undefined => {
   }
   return undefined; // undefined en caso de rol desconocido.
 };
+
+
+
+export async function getUserAdmin ( id: string ) {
+
+  const session = await getServerSession(authConfig);
+  const sessionUserId = session?.user.id;
+
+  if (!sessionUserId) {
+    return createServerResponse(
+      false,
+      StatusCodes.UNAUTHORIZED,
+      null,
+      "No se encuentra logeado para realizar esta acción."
+    );
+  }
+
+  if (!session.user.roles!.includes("admin")) {
+    return createServerResponse(
+      false,
+      StatusCodes.FORBIDDEN,
+      null,
+      "Usted no tiene permisos para realizar esta acción."
+    );
+  }
+
+  const user = await prisma.user.findUnique( {
+    where: {
+      id
+    },
+    select: {
+      id: true,
+      email: true,
+      name: true,
+      isActive: true,
+      roles: true,
+      image: true
+    }
+  } );
+
+  if( !user )
+    return createServerResponse( false, StatusCodes.NOT_FOUND, null, "No se encontro el usuario en sistema" );
+  const resumedUser: UserResume = { ...user, email: user.email!, name: user.name!, image: user.image ? user.image : undefined };
+  return createServerResponse( true, StatusCodes.OK, resumedUser, "Usuario encontrado" );
+}
+
+
+
+export async function updateUserAdmin ( id: string, userEdited: UserResume ) {
+
+  const session = await getServerSession(authConfig);
+  const sessionUserId = session?.user.id;
+  if (!sessionUserId) {
+    return createServerResponse(
+      false,
+      StatusCodes.UNAUTHORIZED,
+      null,
+      "No se encuentra logeado para realizar esta acción."
+    );
+  }
+
+  if (!session.user.roles!.includes("admin")) {
+    return createServerResponse(
+      false,
+      StatusCodes.FORBIDDEN,
+      null,
+      "Usted no tiene permisos para realizar esta acción."
+    );
+  }
+
+  try {
+    const user = await prisma.user.update( {
+    where: {
+      id: id
+    },
+    data: {
+        name: userEdited.name,
+        email: userEdited.email,
+        isActive: userEdited.isActive,
+        roles: (userEdited.roles.includes('admin')? ['admin', 'user']:['user']) as Role[]
+    }
+  });
+  if( ! user ) 
+    return createServerResponse( false, StatusCodes.NOT_FOUND, null, "El usuario buscado no existe en sistema" );
+
+  const userResumedUpdated: UserResume= { id: user.id, email: user.email!, isActive: user.isActive, name: user.name!, roles: user.roles.map( rol => rol.toString() ) };
+  return createServerResponse( true, StatusCodes.OK, userResumedUpdated, "Usuario actualizado correctamente" );
+  } catch (error) {
+    console.log(error);
+    return createServerResponse( false, StatusCodes.INTERNAL_SERVER_ERROR, null, "Error interno del sistema. Contacte al administrador" );
+  }
+}

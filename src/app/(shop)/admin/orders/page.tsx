@@ -1,10 +1,11 @@
 import { getPaginatedOrders } from '@/actions/orders/adminOrderActions';
 import { OrderResume } from '@/actions/orders/interfaces/interfases';
 import { authConfig } from '@/auth.config';
-import { OrderFilters, Title } from '@/components';
+import { OrderFilters, PaginationBar, Title } from '@/components';
 import OrderFiltersBar from '@/components/admin/filters/orders-filter-bar/OrderFilterBar';
 import { OrderCardList } from '@/components/orders/OrderCardList/OrderCardList';
 import { OrderTable } from '@/components/orders/OrderTable/OrderTable';
+import { PaginationBarClient } from '@/components/ui/pagination-bar-client/PaginationBarClient';
 import { PaginatedResponse, parseDate } from '@/helpers';
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
@@ -50,11 +51,12 @@ export default async function OrdersPage({ searchParams = {} }: OrderProps) {
     redirect('/');
 
   const resumedOrdersList = (response.data as PaginatedResponse<OrderResume>).data;
-
+  const currentPage = response.data!.currentPage;
+  const totalPages = response.data!.totalPages;
 
   return (
     <>
-      <Title title="Orders" />
+      <Title title="Administración de Ordenes" />
       <div className="mb-10">
         <OrderFiltersBar/>
         <div className="hidden md:block">
@@ -64,6 +66,7 @@ export default async function OrdersPage({ searchParams = {} }: OrderProps) {
           <OrderCardList resumedOrdersList={resumedOrdersList} />
         </div>
       </div>
+      <PaginationBarClient currentPage={currentPage} totalPages={ totalPages} showFirstLast={true} />
     </>
   );
 }

@@ -1,9 +1,11 @@
 'use server';
 
-import { Product, ProductFilters, Types } from "@/components";
-import { Prisma, Product as ProductDB } from "@/generated/prisma";
-import { calculatePagination, DEFAULT_PAGE_SIZE, PaginatedResponse } from "@/helpers";
+import { Product, ProductFilters, ProductWithImages, Types } from "@/components";
+import { Prisma } from "@/generated/prisma";
+import { calculatePagination, createServerResponse, DEFAULT_PAGE_SIZE, PaginatedResponse } from "@/helpers";
 import prisma from "@/lib/prisma/prisma";
+import { StatusCodes } from "http-status-codes";
+import { FullImage } from '../../../components/interfaces/product.interface';
 
 export async function getPaginatedProductsWithImages(
   page: number,
@@ -144,5 +146,37 @@ export const getStockAction = async (slug: string): Promise<number | null> => {
   } catch (error) {
     console.log("Error al buscar producto por slug");
     return null;
+  }
+}
+
+export const getProductById = async (id: string) => {
+
+  try {
+    const product = await prisma.product.findFirst({
+      where: { id: id },
+      include: {
+        images: {
+          select: {
+            id: true,
+            url: true,
+          }
+        }
+      }
+    });
+
+    if (!product)
+      return createServerResponse(false, StatusCodes.NOT_FOUND, null, "El producto no fue encontrado.");
+
+    const productFront: ProductWithImages = {
+      ...product,
+      description: product.description ?? "",
+      images: product.images.map(  img => ({ id: String(img.id), url: img.url } as FullImage) ),
+      gender: product.gender,
+      type: product.type as Types
+    };
+    return createServerResponse(true, StatusCodes.OK,productFront, "Producto encontrado" );
+  } catch (error) {
+    console.log(error)   
+    return createServerResponse(false, StatusCodes.INTERNAL_SERVER_ERROR, null, "Ha ocurrido un error en el servidor. Porfavor, comuniquese con el administrador.");
   }
 }

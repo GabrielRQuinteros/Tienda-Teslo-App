@@ -3,6 +3,7 @@
 import { QuantitySelector } from "@/components/product";
 import { useCartStore } from "@/components/store/CartStore";
 import { currencyFormat } from "@/helpers";
+import { adaptUrlSource } from "@/helpers/casts/casts";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -16,7 +17,7 @@ export const ProductsInCart = () => {
         {productsInCart.map((prod) => (
             <div key={prod.slug + prod.size} className="flex">
             <Image
-                src={`/products/${prod.image}`}
+                src={ adaptUrlSource(prod.image) }
                 width={100}
                 height={100}
                 alt={prod.title}

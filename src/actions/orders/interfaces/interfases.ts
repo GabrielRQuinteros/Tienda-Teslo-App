@@ -95,4 +95,5 @@ export interface UserResume {
   email: string;
   roles: string[];
   isActive: boolean;
+  image?: string;
 }

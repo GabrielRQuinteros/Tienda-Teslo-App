@@ -80,6 +80,7 @@ model ProductImage{
   url             String
   product         Product       @relation( fields: [productId], references: [id] )
   productId       String
+  publicId        String        @default("")
 }
 
 /// ----------- NEXTAUTH -------------

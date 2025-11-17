@@ -8,6 +8,7 @@ import 'swiper/css/free-mode';
 import 'swiper/css/pagination';
 import 'swiper/css/thumbs';
 import './slideshow.css';
+import { adaptUrlSource } from "@/helpers/casts/casts";
 
 interface Props {
   images: string[];
@@ -32,7 +33,7 @@ export const ProductMobileSlideShow = ({ images, title, className }: Props) => {
         {
           images.map( image => (
             <SwiperSlide key={image} >
-              <Image  src={ `/products/${image}` }
+              <Image  src={ adaptUrlSource(image) }
                       alt={ title }
                       width={300}
                       height={300}

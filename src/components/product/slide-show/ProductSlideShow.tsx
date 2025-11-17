@@ -10,6 +10,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/thumbs';
 import './slideshow.css';
 import { Swiper as SwiperObject} from "swiper";
+import { adaptUrlSource } from "@/helpers/casts/casts";
 
 interface Props {
   images: string[];
@@ -34,7 +35,7 @@ export const ProductSlideShow = ({ images, title, className }: Props) => {
         {
           images.map( image => (
             <SwiperSlide key={image} >
-              <Image  src={ `/products/${image}` }
+              <Image  src={ adaptUrlSource(image) }
                       alt={ title }
                       width={900}
                       height={900}
@@ -57,7 +58,7 @@ export const ProductSlideShow = ({ images, title, className }: Props) => {
         {
             images.map( image => (
               <SwiperSlide key={image} >
-                <Image  src={ `/products/${image}` }
+                <Image  src={ adaptUrlSource(image) }
                         alt={ title }
                         width={300}
                         height={300}

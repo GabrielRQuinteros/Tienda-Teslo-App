@@ -9,7 +9,7 @@ const Categories = {
   KIDS: { id: "kids", name: "kids" },
   MEN: { id: "men", name: "men" },
   WOMEN: { id: "women", name: "women" },
-  UNISEX: { id: "women", name: "women" },
+  UNISEX: { id: "unisex", name: "unisex" },
 } as const;
 
 // Array de categorías

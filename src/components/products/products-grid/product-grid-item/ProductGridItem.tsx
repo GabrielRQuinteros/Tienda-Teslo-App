@@ -1,5 +1,6 @@
 "use client";
 import { Product } from "@/components/interfaces";
+import { adaptUrlSource } from "@/helpers/casts/casts";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -24,7 +25,7 @@ export const ProductGridItem = ({ product }: Props) => {
     <div className="rounded overflow-hidden fade-in">
         <Link href={`/product/${product.slug}`}>
         <Image
-            src={`/products/${displayImage}`}
+            src={adaptUrlSource(displayImage)}
             alt={product.title}
             className="w-full object-cover rounded-lg"
             width={500}

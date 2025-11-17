@@ -1,7 +1,17 @@
 import type { NextConfig } from "next";
+import withFlowbiteReact from "flowbite-react/plugin/nextjs";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  images: {
+    unoptimized: true,
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+        pathname: "/**",
+      },
+    ],
+  },
 };
 
-export default nextConfig;
+export default withFlowbiteReact(nextConfig);

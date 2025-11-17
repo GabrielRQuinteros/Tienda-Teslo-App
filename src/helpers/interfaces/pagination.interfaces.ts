@@ -10,7 +10,7 @@ export interface PaginatedResponse<T> {
   hasPrev: boolean;         // ¿Hay página anterior?
 }
 
-export const DEFAULT_PAGE_SIZE=12;
+export const DEFAULT_PAGE_SIZE=9;
 
 export interface PaginationResult {
   totalItems: number;
